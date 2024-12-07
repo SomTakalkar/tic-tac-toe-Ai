@@ -25,8 +25,8 @@ A simple Tic Tac Toe game built using React.js for the frontend and Flask with S
 
 ### **2. Clone the Repository**
 ```bash
-git clone https://github.com/your-username/tic-tac-toe-webapp.git
-cd tic-tac-toe-webapp
+git clone https://github.com/SomTakalkar/tic-tac-toe-Ai.git
+cd tictactoe_ai
 ```
 
 ### **3. Install Frontend Dependencies**
