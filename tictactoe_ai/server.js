@@ -2,10 +2,24 @@ const express = require('express');
 const http = require('http');
 const { Server } = require('socket.io');
 const { execFile } = require('child_process');
+const cors = require('cors');
 
 const app = express();
+
+// Enable CORS for your frontend
+app.use(cors({
+    origin: 'http://localhost:3000', // Allow communication from this origin
+    methods: ['GET', 'POST'],
+    allowedHeaders: ['Content-Type']
+}));
+
 const server = http.createServer(app);
-const io = new Server(server);
+const io = new Server(server, {
+    cors: {
+        origin: 'http://localhost:3000',
+        methods: ['GET', 'POST']
+    }
+});
 
 const PORT = 4000;
 

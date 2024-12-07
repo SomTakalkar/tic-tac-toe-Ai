@@ -1,6 +1,8 @@
 import random
 import socketio
 from flask import Flask
+import sys
+import json
 
 # Initialize Flask app and SocketIO server
 app = Flask(__name__)
@@ -53,5 +55,11 @@ def disconnect(sid):
     print(f'Client disconnected: {sid}')
 
 if __name__ == "__main__":
-    from werkzeug.serving import run_simple
-    run_simple('localhost', 4000, app)  # Run Flask app on port 4000
+    if len(sys.argv) > 1:
+        # Handle Python script execution with board state passed as argument
+        board = json.loads(sys.argv[1])  # Assuming the board state is passed as JSON
+        best_move = find_best_move(board, 'O')
+        print(best_move)  # Output AI's move as an integer index
+    else:
+        from werkzeug.serving import run_simple
+        run_simple('localhost', 4000, app)  # Run Flask app on port 4000
