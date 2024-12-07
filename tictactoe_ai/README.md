@@ -1,70 +1,135 @@
-# Getting Started with Create React App
+Here’s a detailed `README.md` file for your Tic Tac Toe Web App with AI integration. It includes instructions on setup, running, and an explanation of the features.
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+---
 
-## Available Scripts
+# **Tic Tac Toe Web App with AI**
 
-In the project directory, you can run:
+A simple Tic Tac Toe game built using React.js for the frontend and Flask with Socket.IO for the backend. The game allows players to:
+- Play with a friend locally.
+- Play against an AI powered by Minimax with Alpha-Beta Pruning.
 
-### `npm start`
+## **Features**
+- **Play with a Friend**: Two players can play on the same device.
+- **Play with AI**: Play against a challenging AI that uses the Minimax algorithm for decision-making.
+- **Undo Functionality**: Each player can undo one move per turn.
+- **Real-Time Updates**: Moves and game states are synchronized using Socket.IO.
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+---
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+## **Setup Instructions**
 
-### `npm test`
+### **1. Prerequisites**
+- **Node.js** (v14 or higher) for the frontend.
+- **Python** (3.8 or higher) for the backend.
+- **Flask** and **Socket.IO** for server-side communication.
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+### **2. Clone the Repository**
+```bash
+git clone https://github.com/SomTakalkar/tic-tac-toe-Ai.git
+cd tictactoe_ai
+```
 
-### `npm run build`
+### **3. Install Frontend Dependencies**
+Navigate to the `src` directory and install the required Node.js packages:
+```bash
+cd src
+npm install
+```
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+### **4. Set Up the Backend**
+Navigate to the `python_engine` directory (or wherever `ai_engine.py` is located) and create a Python virtual environment:
+```bash
+cd python_engine
+python -m venv venv
+source venv/bin/activate  # On Windows: venv\Scripts\activate
+pip install -r requirements.txt
+```
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+---
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+## **Running the Application**
 
-### `npm run eject`
+### **1. Start the Backend**
+Run the Flask backend server:
+```bash
+python ai_engine.py
+```
+By default, the server will start at `http://localhost:4000`.
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+### **2. Start the Frontend**
+Navigate back to the `src` folder and run:
+```bash
+npm start
+```
+The React app will start on `http://localhost:3000` and connect to the backend server.
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+---
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+## **How to Play**
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+### **1. Select a Game Mode**
+- **Play with AI**: Compete against the AI, which plays as 'O'.
+- **Play with a Friend**: Play locally with another person.
 
-## Learn More
+### **2. Make Your Moves**
+- Click on a cell to make a move.
+- Alternate turns between 'X' and 'O'.
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+### **3. Undo**
+- Each player can undo their most recent move.
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+### **4. Win the Game**
+- Align three symbols in a row, column, or diagonal to win.
 
-### Code Splitting
+---
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+## **Code Structure**
+```
+tic-tac-toe/
+│
+├── node_modules/         # Frontend dependencies
+├── public/               # Public assets
+├── src/                  # React.js frontend code
+│   ├── App.js            # Main application component
+│   ├── Board.js          # Game board logic
+│   ├── Cell.js           # Individual cell component
+│   ├── index.js          # Entry point for React app
+│   ├── styles/           # CSS files
+│
+├── python_engine/        # Backend AI logic and Flask server
+│   ├── ai_engine.py      # Backend server with Minimax AI
+│   ├── requirements.txt  # Python dependencies
+│
+├── package.json          # Frontend dependencies and scripts
+├── README.md             # Project documentation
+```
 
-### Analyzing the Bundle Size
+---
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+## **Technologies Used**
+- **Frontend**: React.js
+- **Backend**: Flask, Python, Socket.IO
+- **AI Algorithm**: Minimax with Alpha-Beta Pruning
+- **Real-Time Communication**: Socket.IO
 
-### Making a Progressive Web App
+---
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+## **Future Improvements**
+- Add online multiplayer functionality.
+- Enhance the AI with a deeper Minimax depth or reinforcement learning.
+- Track and display game stats, like wins and losses.
+- Improve UI/UX for a more interactive experience.
 
-### Advanced Configuration
+---
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+## **Contributors**
+- **Your Name**: Full-stack developer, AI integration.
 
-### Deployment
+---
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+## **License**
+This project is licensed under the MIT License.
 
-### `npm run build` fails to minify
+---
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+Let me know if you'd like to customize the file further or add sections like FAQs!
