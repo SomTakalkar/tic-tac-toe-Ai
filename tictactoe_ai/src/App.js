@@ -3,7 +3,7 @@ import { io } from 'socket.io-client';
 import Board from './Board';
 import './App.css';
 
-const socket = io('http://localhost:4000'); // Connect to the backend
+const socket = io('https://tic-tac-toe-ai-zm5o.onrender.com'); // Connect to the backend
 
 const App = () => {
   const initialBoardState = Array(9).fill(null);

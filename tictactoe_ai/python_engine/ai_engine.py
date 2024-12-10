@@ -3,10 +3,17 @@ import socketio
 from flask import Flask
 import sys
 import json
+from flask_cors import CORS  # Import Flask-CORS
+import os  # Import os for environment variables
+
+from werkzeug import run_simple
 
 # Initialize Flask app and SocketIO server
-app = Flask(__name__)
-sio = socketio.Server(cors_allowed_origins="*")  # Allow cross-origin requests
+app = Flask(__name__)  # Initialize Flask app
+CORS(app)  # Enable Cross-Origin Resource Sharing (CORS)
+
+# Wrap Flask app with SocketIO
+sio = socketio.Server(cors_allowed_origins="*")  # Allow cross-origin for SocketIO
 app.wsgi_app = socketio.WSGIApp(sio, app.wsgi_app)
 
 # Utility functions
@@ -14,8 +21,7 @@ def check_winner(board):
     """Check if there is a winner."""
     win_conditions = [
         [0, 1, 2], [3, 4, 5], [6, 7, 8],  # Rows
-        [0, 3, 6], [1, 4, 7], [2, 5, 8],  # Columns
-        [0, 4, 8], [2, 4, 6]              # Diagonals
+        [0, 3, 6], [1, 4, 7], [2, 5, 8]   # Columns
     ]
     for condition in win_conditions:
         a, b, c = condition
@@ -128,7 +134,7 @@ def gameResult(sid, data):
 def disconnect(sid):
     print(f'Client disconnected: {sid}')
 
-# Entry point
+# Entry point for Render
 if __name__ == "__main__":
     if len(sys.argv) > 1:
         # Handle script execution with board state passed as argument
@@ -136,5 +142,5 @@ if __name__ == "__main__":
         best_move = find_best_move(board, 'O')
         print(best_move)  # Output AI's move as an integer index
     else:
-        from werkzeug.serving import run_simple
-        run_simple('0.0.0.0', 4000, app)  # Run Flask app on port 4000, accessible from any network
+        port = int(os.environ.get("PORT", 4000))  # Render provides the PORT env variable
+        run_simple('0.0.0.0', port, app)  # Run Flask app on Render
