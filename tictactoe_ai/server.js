@@ -8,7 +8,7 @@ const app = express();
 
 // Enable CORS for your frontend
 app.use(cors({
-    origin: 'http://localhost:3000', // Allow communication from this origin
+    origin: 'https://tic-tac-toe-ai-d9mp.vercel.app', // Updated frontend URL
     methods: ['GET', 'POST'],
     allowedHeaders: ['Content-Type']
 }));
@@ -16,7 +16,7 @@ app.use(cors({
 const server = http.createServer(app);
 const io = new Server(server, {
     cors: {
-        origin: 'http://localhost:3000',
+        origin: 'https://tic-tac-toe-ai-d9mp.vercel.app', // Updated frontend URL
         methods: ['GET', 'POST']
     }
 });
@@ -100,5 +100,5 @@ function isDraw(board) {
 
 // Start the server
 server.listen(PORT, () => {
-    console.log(`Server running on http://localhost:${PORT}`);
+    console.log(`Server running on https://tic-tac-toe-ai-4xbc.onrender.com:${PORT}`);
 });
