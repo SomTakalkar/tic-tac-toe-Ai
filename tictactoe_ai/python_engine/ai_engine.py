@@ -6,7 +6,7 @@ import json
 
 # Initialize Flask app and SocketIO server
 app = Flask(__name__)
-sio = socketio.Server()
+sio = socketio.Server(cors_allowed_origins="*")  # Allow cross-origin requests
 app.wsgi_app = socketio.WSGIApp(sio, app.wsgi_app)
 
 # Utility functions
@@ -99,7 +99,8 @@ def playerMove(sid, data):
     # AI move handling (AI plays as 'O')
     if mode == 'AI' and currentPlayer == 'O':  # AI plays as 'O'
         best_move = find_best_move(board, 'O')
-        board[best_move] = 'O'
+        if best_move is not None:
+            board[best_move] = 'O'
 
         # Check if the AI wins or the game ends
         winner = check_winner(board)
@@ -121,7 +122,6 @@ def playerMove(sid, data):
 
 @sio.event
 def gameResult(sid, data):
-    # Handle game result (optional)
     print(f"Game result: {data}")
 
 @sio.event
@@ -137,4 +137,4 @@ if __name__ == "__main__":
         print(best_move)  # Output AI's move as an integer index
     else:
         from werkzeug.serving import run_simple
-        run_simple('localhost', 4000, app)  # Run Flask app on port 4000
+        run_simple('0.0.0.0', 4000, app)  # Run Flask app on port 4000, accessible from any network
