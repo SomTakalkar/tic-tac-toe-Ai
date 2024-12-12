@@ -8,7 +8,7 @@ const app = express();
 
 // Enable CORS for your frontend
 app.use(cors({
-    origin: 'http://tic-tac-toe-ai-pearl.vercel.app/', // Updated frontend URL
+    origin: 'https://tic-tac-toe-ai-pearl.vercel.app/', // Updated frontend URL
     methods: ['GET', 'POST'],
     allowedHeaders: ['Content-Type']
 }));
@@ -16,7 +16,7 @@ app.use(cors({
 const server = http.createServer(app);
 const io = new Server(server, {
     cors: {
-        origin: 'http://tic-tac-toe-ai-pearl.vercel.app/', // Updated frontend URL
+        origin: 'https://tic-tac-toe-ai-pearl.vercel.app/', // Updated frontend URL
         methods: ['GET', 'POST']
     }
 });
@@ -40,7 +40,7 @@ io.on('connection', (socket) => {
         // Check if the mode is AI and it's AI's turn
         if (data.mode === 'AI' && currentPlayer === 'O') {
             // Call the Python AI engine
-            const pythonScript = 'python_engine/ai_engine.py';
+            const pythonScript = './python_engine/ai_engine.py';
             execFile('python', [pythonScript, JSON.stringify(board)], (error, stdout) => {
                 if (error) {
                     console.error('Error executing AI engine:', error);
@@ -49,20 +49,11 @@ io.on('connection', (socket) => {
 
                 // Parse the AI's move from Python output
                 const aiMove = parseInt(stdout.trim());
-                if (board[aiMove] === null) {
+                if (!isNaN(aiMove) && board[aiMove] === null) {
                     board[aiMove] = 'O';
-                    currentPlayer = 'X'; // Switch back to human player
-
-                    // Send updated game state to all clients
-                    const winner = checkWinner(board);
-                    const gameStatus = winner ? `Player ${winner} wins!` : isDraw(board) ? "It's a draw!" : '';
-                    io.emit('updateGame', { board, currentPlayer, gameStatus });
+                } else {
+                    console.error('AI returned an invalid move.');
                 }
-            });
-        } else {
-            // For "Play with Friend" mode, just broadcast the move
-            io.emit('updateGame', data);
-        }
     });
 
     // Reset game

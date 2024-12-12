@@ -6,7 +6,7 @@ import json
 from flask_cors import CORS  # Import Flask-CORS
 import os  # Import os for environment variables
 
-from werkzeug import run_simple
+from werkzeug.serving import run_simple
 
 # Initialize Flask app and SocketIO server
 app = Flask(__name__)  # Initialize Flask app
@@ -75,6 +75,9 @@ def minimax(board, depth, is_maximizing, alpha, beta, player):
 
 def find_best_move(board, player):
     """Find the best move for the AI using Minimax with alpha-beta pruning."""
+    if board.count(None) == 9:  # AI first move
+        return random.choice([0, 2, 6, 8, 4])  # Corners or center
+
     best_score = float('-inf')
     best_move = None
 

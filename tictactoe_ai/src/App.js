@@ -32,6 +32,9 @@ const App = () => {
       setCurrentPlayer(data.currentPlayer);
       setGameStatus(data.gameStatus);
     });
+    return () => {
+      socket.off('updateGame'); // Clean up listener
+    };
   }, []);
 
   const checkWinner = (board) => {
