@@ -8,7 +8,7 @@ const app = express();
 
 // Enable CORS for your frontend
 app.use(cors({
-    origin: 'https://tic-tac-toe-ai-d9mp.vercel.app', // Updated frontend URL
+    origin: 'https://tic-tac-toe-ai-git-main-som-takalkars-projects.vercel.app/', // Updated frontend URL
     methods: ['GET', 'POST'],
     allowedHeaders: ['Content-Type']
 }));
