@@ -5,7 +5,7 @@ import sys
 import json
 from flask_cors import CORS  # Import Flask-CORS
 import os  # Import os for environment variables
-
+from config import STATIC_OUTBOUND_IPS
 from werkzeug.serving import run_simple
 
 # Initialize Flask app and SocketIO server
@@ -15,6 +15,12 @@ CORS(app)  # Enable Cross-Origin Resource Sharing (CORS)
 # Wrap Flask app with SocketIO
 sio = socketio.Server(cors_allowed_origins="*")  # Allow cross-origin for SocketIO
 app.wsgi_app = socketio.WSGIApp(sio, app.wsgi_app)
+
+
+@app.route('/get-static-ips', methods=['GET'])
+def get_static_ips():
+    """Return the static outbound IPs for reference."""
+    return {"static_ips": STATIC_OUTBOUND_IPS}
 
 # Utility functions
 def check_winner(board):
