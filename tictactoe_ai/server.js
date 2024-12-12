@@ -26,7 +26,6 @@ const PORT = 4000;
 let board = Array(9).fill(null); // Shared board state
 let currentPlayer = 'X';         // Current player
 
-// Handle client connections
 io.on('connection', (socket) => {
     console.log('A user connected:', socket.id);
 
