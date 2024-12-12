@@ -16,7 +16,7 @@ CORS(app)  # Enable Cross-Origin Resource Sharing (CORS)
 sio = socketio.Server(cors_allowed_origins="*")  # Allow cross-origin for SocketIO
 app.wsgi_app = socketio.WSGIApp(sio, app.wsgi_app)
 
-
+#static bound IPs
 @app.route('/get-static-ips', methods=['GET'])
 def get_static_ips():
     """Return the static outbound IPs for reference."""
