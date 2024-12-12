@@ -16,7 +16,7 @@ app.use(cors({
 const server = http.createServer(app);
 const io = new Server(server, {
     cors: {
-        origin: 'https://tic-tac-toe-ai-d9mp.vercel.app', // Updated frontend URL
+        origin: 'http://tic-tac-toe-ai-pearl.vercel.app/', // Updated frontend URL
         methods: ['GET', 'POST']
     }
 });
