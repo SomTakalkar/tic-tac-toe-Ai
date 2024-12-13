@@ -3,7 +3,8 @@ import { io } from 'socket.io-client';
 import Board from './Board';
 import './App.css';
 
-const socket = io("https://tic-tac-toe-ai-4xbc.onrender.com"); // Connect to the backend
+// Connect to the backend using the environment variable or hardcoded URL
+const socket = io(process.env.REACT_APP_BACKEND_URL || "https://tic-tac-toe-ai-4xbc.onrender.com");
 
 const App = () => {
   const initialBoardState = Array(9).fill(null);
@@ -32,60 +33,33 @@ const App = () => {
       setCurrentPlayer(data.currentPlayer);
       setGameStatus(data.gameStatus);
     });
+
+    // Clean up listeners on unmount
     return () => {
-      socket.off('updateGame'); // Clean up listener
+      socket.off('updateGame');
     };
   }, []);
 
-  const checkWinner = (board) => {
-    for (const condition of winConditions) {
-      const [a, b, c] = condition;
-      if (board[a] && board[a] === board[b] && board[a] === board[c]) {
-        setWinningLine(condition);
-        return board[a];
-      }
-    }
-    return null;
-  };
-
-  const isDraw = (board) => {
-    return board.every((cell) => cell !== null);
-  };
-
   const handleCellClick = (index) => {
-    if (board[index] || gameStatus) return;
+    if (board[index] || gameStatus) return; // Ignore if cell is filled or game is over
 
     const newBoard = [...board];
     newBoard[index] = currentPlayer;
 
-    const winner = checkWinner(newBoard);
-    const updatedGameStatus = winner
-        ? `Player ${winner} wins!`
-        : isDraw(newBoard)
-            ? "It's a draw!"
-            : '';
     const nextPlayer = currentPlayer === 'X' ? 'O' : 'X';
 
+    // Emit move to server
     const gameUpdate = {
       board: newBoard,
       currentPlayer: nextPlayer,
-      gameStatus: updatedGameStatus,
-      mode, // Send the game mode (AI or Friend) to the server
+      gameStatus: '',
+      mode, // Include the selected game mode
     };
 
     setBoard(newBoard);
     setCurrentPlayer(nextPlayer);
-    setGameStatus(updatedGameStatus);
-    socket.emit('playerMove', gameUpdate);
 
-    if (winner || isDraw(newBoard)) {
-      const gameResult = {
-        winner,
-        board: newBoard,
-        status: updatedGameStatus,
-      };
-      socket.emit('gameResult', gameResult); // Send game result to server
-    }
+    socket.emit('playerMove', gameUpdate);
   };
 
   const resetGame = () => {
@@ -93,26 +67,26 @@ const App = () => {
     setCurrentPlayer('X');
     setGameStatus('');
     setWinningLine([]);
-    socket.emit('playerMove', { board: initialBoardState, currentPlayer: 'X', gameStatus: '' });
+    socket.emit('resetGame'); // Notify server to reset the game
   };
 
   const selectMode = (selectedMode) => {
     setMode(selectedMode);
-    resetGame();
+    resetGame(); // Reset game when mode is selected
   };
 
   return (
-      <div>
+      <div className="App">
         <h1>Tic Tac Toe</h1>
         {!mode ? (
-            <div>
+            <div className="mode-selection">
               <button onClick={() => selectMode('Friend')}>Play with Friend</button>
               <button onClick={() => selectMode('AI')}>Play with AI</button>
             </div>
         ) : (
-            <div>
+            <div className="game-container">
               <Board board={board} onCellClick={handleCellClick} winningLine={winningLine} />
-              <div>
+              <div className="game-info">
                 <h2>{gameStatus || `Current Player: ${currentPlayer}`}</h2>
                 {gameStatus && <button onClick={resetGame}>Restart</button>}
                 <button onClick={() => setMode(null)}>Back to Menu</button>
