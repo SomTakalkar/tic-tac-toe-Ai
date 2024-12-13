@@ -8,7 +8,7 @@ const app = express();
 
 // Enable CORS for your frontend
 app.use(cors({
-    origin: 'https://tic-tac-toe-ai-pearl.vercel.app/', // Updated frontend URL
+    origin: "https://tic-tac-toe-ai-pearl.vercel.app/", // Updated frontend URL
     methods: ['GET', 'POST'],
     allowedHeaders: ['Content-Type']
 }));
@@ -16,7 +16,7 @@ app.use(cors({
 const server = http.createServer(app);
 const io = new Server(server, {
     cors: {
-        origin: 'https://tic-tac-toe-ai-pearl.vercel.app/', // Updated frontend URL
+        origin: "https://tic-tac-toe-ai-pearl.vercel.app/", // Updated frontend URL
         methods: ['GET', 'POST']
     }
 });
@@ -50,10 +50,19 @@ io.on('connection', (socket) => {
                 // Parse the AI's move from Python output
                 const aiMove = parseInt(stdout.trim());
                 if (!isNaN(aiMove) && board[aiMove] === null) {
-                    board[aiMove] = 'O';
+                    board[aiMove] = 'O'; // Make the AI move
+                    currentPlayer = 'X'; // Switch turn to player X
                 } else {
                     console.error('AI returned an invalid move.');
                 }
+
+                // Emit updated game state to all clients
+                io.emit('updateGame', { board, currentPlayer, gameStatus: checkGameStatus(board) });
+            });
+        } else {
+            // Emit updated game state to all clients if it was a player move
+            io.emit('updateGame', { board, currentPlayer, gameStatus: checkGameStatus(board) });
+        }
     });
 
     // Reset game
@@ -86,6 +95,17 @@ function checkWinner(board) {
 
 function isDraw(board) {
     return board.every((cell) => cell !== null);
+}
+
+function checkGameStatus(board) {
+    const winner = checkWinner(board);
+    if (winner) {
+        return `Player ${winner} wins!`;
+    } else if (isDraw(board)) {
+        return "It's a draw!";
+    } else {
+        return `Player ${currentPlayer}'s turn`;
+    }
 }
 
 // Start the server
