@@ -1,3 +1,4 @@
+require('dotenv').config();
 const express = require('express');
 const http = require('http');
 const { Server } = require('socket.io');
@@ -5,10 +6,12 @@ const { execFile } = require('child_process');
 const cors = require('cors');
 
 const app = express();
+const PORT = process.env.PORT || 4000;
+const FRONTEND_URL = process.env.FRONTEND_URL;
 
 // Enable CORS for your frontend
 app.use(cors({
-    origin: "https://tic-tac-toe-ai-pearl.vercel.app/", // Updated frontend URL
+    origin: FRONTEND_URL, // Use environment variable for frontend URL
     methods: ['GET', 'POST'],
     allowedHeaders: ['Content-Type']
 }));
@@ -16,12 +19,11 @@ app.use(cors({
 const server = http.createServer(app);
 const io = new Server(server, {
     cors: {
-        origin: "https://tic-tac-toe-ai-pearl.vercel.app/", // Updated frontend URL
-        methods: ['GET', 'POST']
+        origin: FRONTEND_URL, // Use environment variable for frontend URL
+        methods: ['GET', 'POST'],
+        transports: ['websocket', 'polling'] // Explicitly define transports
     }
 });
-
-const PORT = 4000;
 
 let board = Array(9).fill(null); // Shared board state
 let currentPlayer = 'X';         // Current player
@@ -41,11 +43,13 @@ io.on('connection', (socket) => {
         if (data.mode === 'AI' && currentPlayer === 'O') {
             // Call the Python AI engine
             const pythonScript = './python_engine/ai_engine.py';
-            execFile('python', [pythonScript, JSON.stringify(board)], (error, stdout) => {
+            execFile('python3', [pythonScript, JSON.stringify(board)], (error, stdout, stderr) => {
                 if (error) {
-                    console.error('Error executing AI engine:', error);
+                    console.error(`AI Engine Error: ${error.message}`);
+                    console.error(`Stderr: ${stderr}`);
                     return;
                 }
+                console.log(`AI Engine Output: ${stdout}`);
 
                 // Parse the AI's move from Python output
                 const aiMove = parseInt(stdout.trim());
@@ -53,6 +57,7 @@ io.on('connection', (socket) => {
                     board[aiMove] = 'O'; // Make the AI move
                     currentPlayer = 'X'; // Switch turn to player X
                 } else {
+                    io.emit('error', { message: 'Invalid move from AI' });
                     console.error('AI returned an invalid move.');
                 }
 
@@ -110,5 +115,5 @@ function checkGameStatus(board) {
 
 // Start the server
 server.listen(PORT, () => {
-    console.log(`Server running on https://tic-tac-toe-ai-4xbc.onrender.com:${PORT}`);
+    console.log(`Server running on port ${PORT}`);
 });
